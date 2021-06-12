@@ -1,6 +1,10 @@
 const display = document.querySelector('.screen')
 const buttons = document.querySelector('.button-container')
 
+let firstValue;
+let secondValue;
+let curOperator;
+let finalValue;
 
 let add = (num1, num2) => num1 + num2;
 
@@ -23,64 +27,71 @@ let operate = (a, b, operator) => {
             return multiply(a,b);
             break;
         case 'divide':
-            return divide(a,b);
+            if (b === 0) {
+                return 'IMPOSSIBLE';
+            } else {
+                return divide(a,b);
+            }
     }
+}
+
+let deleteNumber = () => display.textContent = display.textContent.slice(0,-1);
+
+let clear = () => {
+    display.textContent = '';
+    firstValue = '';
+    secondValue = '';
+    curOperator = '';
 }
 
 //event delegation for all calc buttons
 buttons.addEventListener('click', e => {
     
-    if (e.target.matches('.calc-btn')) {
-        // const key = e.target;
-        // const action = key.dataset.action;
-        // const keyContent = key.textContent;
-        const currentDisplay = display.textContent;
+    if (e.target.matches('.calc-btn') && display.textContent.length <= 11) { // if button pressed has the .calc-btn class
 
-        console.log(e.target.textContent)
-        // switch (action) {
-        //     case 'add':
-        //         console.log('add');
-        //         break;
-        //     case 'subtract':
-        //         console.log('subtract');
-        //         break;
-        //     case 'multiply':
-        //         console.log('multiply');
-        //         break;
-        //     case 'divide':
-        //         console.log('divide');
-        //         break;
-        //     case 'percent':
-        //         console.log('percent');
-        //         break;
-        //     case 'clear':
-        //         console.log('clear');
-        //         break;
-        //     case 'delete':
-        //         console.log('delete');
-        //         break;
-        //     case 'decimal':
-        //         console.log('decimal');
-        //         break;
-        //     case 'equal':
-        //         console.log('equal');
-        //         break;
-        //     case !action:
-        //         console.log('number');
-            
-        // }
+        const key = e.target.textContent;
+        let dSet = e.target.dataset.type;
+        let curScreen = display.textContent;
+        let numRegex = /^[0-9]*$/; // regex that contains numbers between 0-9
+
+        if (numRegex.test(key)) {  // if button contains a number from numRegex 
+            if (curScreen === '0') {
+                display.textContent = key;
+            } else {
+                display.textContent = curScreen + key;
+            } 
+        }
+
+        if (dSet === 'operator') { // if button pressed has a dataset.type = 'operator'
+            firstValue = curScreen; // stores first number 
+            curOperator = e.target.dataset.op; // stores operand
+            display.textContent = ''; // resets screen
+        }
+
+        if (key === '.') {
+            if (!display.textContent.includes('.')) { // only runs if no '.' exists already
+                display.textContent = curScreen + '.';
+            }
+        }
+
+        if (key === 'C') {
+            clear();
+        }
+
+        if (!key) {
+            deleteNumber();
+        }
+
+        if (key === '=') {
+            secondValue = curScreen; // when '=' is pressed, stores current screen as secondValue
+            finalValue = operate(+firstValue, +secondValue, curOperator);
+
+            if (finalValue.toString().length >= 12) { // checks if output will be 12 or more characters
+                display.textContent = finalValue.toFixed(2); // if it is, round to 2 decimals
+            } else {
+                display.textContent = finalValue;
+            }
+        }
     }
-    // if (!action) {
-    //     console.log('number key!')
-    // }
-    // if (
-    //     action === 'add' || 
-    //     action === 'subtract' || 
-    //     action === 'multiply' || 
-    //     action === 'divide' || 
-    //     action === 'percent'
-    //     ) {
-    //         console.log('operator key!')
-    //     }
 });
 

@@ -58,9 +58,30 @@ body {
     color: #dfdfdf;
     font-size: 1.4em;
     font-weight: 500;
+    transition: 0.2s;
+}
+
+.calc-btn:hover {
+    color: #616161;
+    background-color: #dfdfdf;
 }
 
 .equal-btn {
     grid-column: 3/5;
     border-radius: 34px;
+}
+
+.equal-btn:hover {
+    background-color: #12CC3B;
+    color: #dfdfdf;
+}
+
+[data-action='clear']:hover {
+    background-color: #FCB31B;
+    color: #dfdfdf;
+}
+
+[data-action='delete']:hover {
+    background-color: #F20D3C;
+    color: #dfdfdf;
 }
