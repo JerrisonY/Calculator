@@ -17,16 +17,16 @@ let divide = (num1, num2) => num1 / num2;
 
 let operate = (a, b, operator) => {
     switch(operator) {
-        case 'add':
+        case 'add', '+':
             return add(a,b);
             break;
-        case 'subtract':
+        case 'subtract', '-':
             return subtract(a,b);
             break;
-        case 'multiply':
+        case 'multiply', '*':
             return multiply(a,b);
             break;
-        case 'divide':
+        case 'divide', '/':
             if (b === 0) {
                 return 'IMPOSSIBLE';
             } else {
@@ -44,7 +44,7 @@ let clear = () => {
     curOperator = '';
 }
 
-//event delegation for all calc buttons
+// *** event delegation for all calc buttons ***
 buttons.addEventListener('click', e => {
     
     if (e.target.matches('.calc-btn') && display.textContent.length <= 11) { // if button pressed has the .calc-btn class
@@ -94,4 +94,54 @@ buttons.addEventListener('click', e => {
         }
     }
 });
+
+// *** Keyboard inputs ***
+let keyInput = (e) => {
+
+    let curScreen = display.textContent;
+
+    if (e.key >= 0 && e.key <= 9 && curScreen === '0') {
+        display.textContent = e.key;
+    } else if (e.key >= 0 && e.key <= 9) {
+        display.textContent += e.key;
+    }
+
+    if (
+        e.key === '+' ||
+        e.key === '-' ||
+        e.key === '*' ||
+        e.key === '/'
+        ) {
+        firstValue = curScreen;
+        curOperator = e.key;
+        display.textContent = '';
+    }
+
+    if (e.key === '.') {
+        if (!display.textContent.includes('.')) {
+            display.textContent = curScreen + '.';
+        }
+    }
+
+    if (e.key === 'Backspace') {
+        deleteNumber();
+    }
+
+    if (e.key === 'c') {
+        clear();
+    }
+
+    if (e.key === '=' || e.key === 'Enter') {
+        secondValue = curScreen;
+        finalValue = operate(+firstValue, +secondValue, curOperator);
+
+        if (finalValue.toString().length >= 12) { 
+            display.textContent = finalValue.toFixed(2); 
+        } else {
+            display.textContent = finalValue;
+        }
+    }
+};
+
+document.addEventListener('keydown', keyInput);
 
