@@ -81,7 +81,7 @@ body {
     color: #dfdfdf;
 }
 
-[data-action='delete']:hover {
+[data-type='delete']:hover {
     background-color: #F20D3C;
     color: #dfdfdf;
 }
