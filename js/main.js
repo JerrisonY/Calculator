@@ -17,16 +17,20 @@ let divide = (num1, num2) => num1 / num2;
 
 let operate = (a, b, operator) => {
     switch(operator) {
-        case 'add', '+':
+        case 'add':
+        case '+':
             return add(a,b);
             break;
-        case 'subtract', '-':
+        case 'subtract':
+        case '-':
             return subtract(a,b);
             break;
-        case 'multiply', '*':
+        case 'multiply':
+        case '*':
             return multiply(a,b);
             break;
-        case 'divide', '/':
+        case 'divide':
+        case '/':
             if (b === 0) {
                 return 'IMPOSSIBLE';
             } else {
@@ -39,9 +43,10 @@ let deleteNumber = () => display.textContent = display.textContent.slice(0,-1);
 
 let clear = () => {
     display.textContent = '';
-    firstValue = '';
-    secondValue = '';
-    curOperator = '';
+    firstValue = undefined;
+    secondValue = undefined;
+    finalValue = undefined;
+    curOperator = null;
 }
 
 // *** event delegation for all calc buttons ***
@@ -63,9 +68,21 @@ buttons.addEventListener('click', e => {
         }
 
         if (dSet === 'operator') { // if button pressed has a dataset.type = 'operator'
-            firstValue = curScreen; // stores first number 
-            curOperator = e.target.dataset.op; // stores operand
             display.textContent = ''; // resets screen
+            
+            if (firstValue === undefined) {
+                firstValue = curScreen; // stores first number 
+                curOperator = e.target.dataset.op; // stores operand
+            } else if (finalValue === undefined) { // allows you to take in several values at once
+                secondValue = curScreen; 
+                firstValue = operate(+firstValue, +secondValue, curOperator); // important to run operate() before it gets redefined
+                curOperator = e.target.dataset.op;
+                display.textContent = '';
+            } else {
+                firstValue = curScreen;
+                curOperator = e.target.dataset.op;
+                display.textContent = '';
+            }
         }
 
         if (key === '.') {
@@ -112,9 +129,21 @@ let keyInput = (e) => {
         e.key === '*' ||
         e.key === '/'
         ) {
-        firstValue = curScreen;
-        curOperator = e.key;
         display.textContent = '';
+
+        if (firstValue === undefined) {
+            firstValue = curScreen; 
+            curOperator = e.key; 
+        } else if (finalValue === undefined) {
+            secondValue = curScreen;
+            firstValue = operate(+firstValue, +secondValue, curOperator); 
+            curOperator = e.key;
+            display.textContent = '';
+        } else {
+            firstValue = curScreen;
+            curOperator = e.key;
+            display.textContent = '';
+        }
     }
 
     if (e.key === '.') {
